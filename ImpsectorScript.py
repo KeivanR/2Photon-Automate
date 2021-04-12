@@ -3,21 +3,24 @@
 import lvbt
 import os
 import imp
-os.chdir(r"C:\Users\james\OneDrive\Sheffield\Building\Manipulator\Stimulus_Control")
+import datetime
+import time
+os.chdir(r"C:\Users\lvbt\Documents\GitHub\2Photon-Automate")
 stim = imp.load_source('Stimulus', 'Stimulus.py')
 
-prepFolder = "D:\\JDoggyDog\\TEST2\\"
+prepFolder = "C:\\Users\\lvbt\\Documents\\Auto Keiv\\"
 if not os.path.isdir(prepFolder):
 	os.mkdir(prepFolder)
 
-port = stim.port
+port = stim.Port()
 
 # Setup a white screen.
-whitescreen = stim.StimulusParameters()
-whitescreen.filename = "whitescreen.mat"
-whitescreen.savevideo = "1"
-whitescreen.externaltrigger = "1"
-whitescreen.repeatstim = "1"
+looming = stim.StimulusParameters()
+looming.filename = "80to2algrating4.mat"
+looming.savevideo = "1"
+looming.externaltrigger = "1"
+looming.repeatstim = "0"
+looming.framelength = "1"
 
 # Setup a grating
 grating = stim.StimulusParameters()
@@ -28,21 +31,24 @@ grating.savevideo = "0"
 m = lvbt.measurement("Measurement 1")
 
 # run a stimulus, export it and save it. (this could be functionalised)
-recordingDir, basename = stim.generate_recording_folder(prepFolder)
-whitescreen.setup()
-whitescreen.trigger()
+dt = datetime.datetime.now().strftime('%y%m%d%H%M%S')
+recordingFolder, basename = stim.generate_recording_folder(prepFolder,dt)
+looming.setup(port)
+looming.trigger(port)
 m.run()
-m.export(recordingDir, basename)
-whitescreen.save(recordingFolder + basename + "_stimulus.txt")
-whitescreen.reset()
-
+m.export(recordingFolder, basename)
+looming.save(port,recordingFolder + basename + "_stimulus.txt",dt = dt)
+looming.reset(port)
+looming.quit(port)
+'''
 # run a second stimulus
-recordingDir, basename = stim.generate_recording_folder(prepFolder)
+dt = datetime.datetime.now().strftime('%y%m%d%H%M%S')
+recordingDir, basename = stim.generate_recording_folder(prepFolder,dt)
 grating.setup()
 grating.trigger()
 m.run()
 m.export(recordingDir, basename)
-grating.save(recordingFolder + basename + "_stimulus.txt")
+grating.save(recordingFolder + basename + "_stimulus.txt", dt = dt)
 grating.reset()
-
+'''
 port.close()
