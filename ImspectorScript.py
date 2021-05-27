@@ -26,9 +26,12 @@ try:
     # run a stimulus, export it and save it. (this could be functionalised)
     stimuli = []
     stimuli += listim.rf_bars(repeat = 2)
-    stimuli += listim.repeat_stim('flash1200.mat',0,10)
-    stimuli += listim.dyna_gratings(speed=[1,2,3],noise=True)
-    stimuli += listim.one_stim('300to1blink1.mat',0)
+    #stimuli += listim.repeat_stim('flash1200.mat',0,10)
+    #stimuli += listim.dyna_gratings(speed=[1,2,3],noise=True,reverse=True)
+    #stimuli += listim.one_stim('300to1blink1.mat',0)
+    stimuli2 = listim.repeat_stim('5to100algrating2.mat',0,40)+listim.repeat_stim('5to100algrating2.mat',180,40)
+    random.shuffle(stimuli2)
+    stimuli += stimuli2
     stimuli += listim.algratings([2,3],[20,40,60],2)
     
     print(listim.names(stimuli))
