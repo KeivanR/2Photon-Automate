@@ -1,6 +1,6 @@
 import Experiment_parameters as exp
 import os
-def update(text,size,path = exp.path):
+def update(text,size,path = exp.path_server):
     os.system('python C:\\Users\\lvbt\\Documents\\GitHub\\2Photon-Automate\\Screenshot.py')
     f = open(path+'index.html','w')
     message = """<html>

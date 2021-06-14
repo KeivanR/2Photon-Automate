@@ -30,6 +30,7 @@ class Port(Serial):
                 Ported = True # is this necessary? may save a couple us by removing.
               
     def sendover(self, message):
+        sys.stdout.write("sendover message: " + str(message) + "\n")
         self.write(str.encode(str(message) + "\n"))
         
 class Parameters(object):

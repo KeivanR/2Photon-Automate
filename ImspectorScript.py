@@ -1,5 +1,3 @@
-# this is an example script to put into impsector, it runs 2 stimuli and then saves them.
-
 import lvbt
 import os
 import imp
@@ -7,7 +5,7 @@ import datetime
 import time
 import numpy as np
 import random
-
+import sys
 os.chdir(r"C:\Users\lvbt\Documents\GitHub\2Photon-Automate")
 stim = imp.load_source('Stimulus', 'Stimulus.py')
 exp = imp.load_source('Experiment_parameters', 'Experiment_parameters.py')
@@ -29,11 +27,11 @@ try:
     #stimuli += listim.repeat_stim('flash1200.mat',0,10)
     #stimuli += listim.dyna_gratings(speed=[1,2,3],noise=True,reverse=True)
     #stimuli += listim.one_stim('300to1blink1.mat',0)
-    stimuli2 = listim.repeat_stim('5to100algrating2.mat',0,40)+listim.repeat_stim('5to100algrating2.mat',180,40)
+    #stimuli2 = listim.repeat_stim('5to100algrating2.mat',0,40)+listim.repeat_stim('5to100algrating2.mat',180,40)
+    
+    stimuli2 = listim.algratings([1,2,3],[5,10,15,20,40,60,100],10)
     random.shuffle(stimuli2)
     stimuli += stimuli2
-    stimuli += listim.algratings([2,3],[20,40,60],2)
-    
     print(listim.names(stimuli))
     inter_time = 12
     duration = int((700/15.3+inter_time)*len(listim.names(stimuli)))-inter_time
@@ -42,7 +40,6 @@ try:
     for stimulus in stimuli:
         t0 = time.time()
         percentage = int(100*i/len(stimuli))
-        wh.update(str(percentage)+'%<br>'+stimulus.filename+'<br>('+str(datetime.timedelta(seconds=duration*(100-percentage)/100))+' left)',size = 70)
         dt = datetime.datetime.now().strftime('%y%m%d%H%M%S')
         recordingFolder, basename = stim.generate_recording_folder(prepFolder,dt)
         stimulus.setup(port)
@@ -55,6 +52,7 @@ try:
         stimulus.save(port,recordingFolder + basename + "_stimulus.txt",dt = dt)
         i += 1
         duration = int((time.time()-t0)*len(stimuli))
+        wh.update(str(percentage)+'%<br>'+stimulus.filename+'<br>('+str(datetime.timedelta(seconds=duration*(100-percentage)/100))+' left)',size = 70)
     stimuli[-1].reset(port)
     stimuli[-1].quit(port)
     wh.update('Experiment finished!',size = 150)
@@ -62,5 +60,8 @@ try:
     port.close()
 
 except:
+    stimuli[-1].reset(port)
+    stimuli[-1].quit(port)
     port.close()
-    wh.update('Experiment finished by an exception!',size = 150)
+    wh.update("Oops!"+str(sys.exc_info()[0])
++"occurred.",size = 150)
